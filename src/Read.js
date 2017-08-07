@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
 class Read extends Component{
-    
+    constructor(props){
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+  
+    handleChange(book,event){
+      console.log(event.target.value);
+      console.log(book[0].book);
+      this.props.updateBook(book[0].book,event.target.value);
+    }
     render(){
         console.log("Read is triggered");
         return (
@@ -14,7 +23,7 @@ class Read extends Component{
                                 <div className="book-top">
                                     <div className="book-cover" style={{ width: 128, height: 192, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
                                     <div className="book-shelf-changer">
-                                    <select defaultValue={book.shelf} onChange={this.handleChange}>
+                                    <select defaultValue={book.shelf}  onChange={this.handleChange.bind(this, [{book}, event])}>
                                         <option value="none" disabled>Move to...</option>
                                         <option value="currentlyReading">Currently Reading</option>
                                         <option value="wantToRead">Want to Read</option>

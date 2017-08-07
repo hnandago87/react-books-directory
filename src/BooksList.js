@@ -6,21 +6,16 @@ import Read from './Read';
 import * as BooksAPI from './BooksAPI'
 
 class BookList extends Component{
-    //Pseudo code to update a particular book:
-    //1: get the book and the shelf value after change -- done
-    //2: find the particular book from the this.state
-    //3: update the book shelf property
-    //4: merge the book with the existing state object
-    //5: replace the book state with the newly updated object
     constructor(props){
         super(props);
+        this.state={
+            books:[]
+        }
         this.categorizeBooks = this.categorizeBooks.bind(this);
         this.updateBookStatus = this.updateBookStatus.bind(this);
         this.findBook = this.findBook.bind(this);
     }
-    state={
-        books:[]
-    }
+    
     categorizeBooks(type){
         var books = [];
         for(var i=0;i<this.state.books.length;i++){
@@ -36,31 +31,52 @@ class BookList extends Component{
         })
     }
     updateBookStatus(book, shelf){
-        console.log(this.findBook(book.id));
-
+        const initialBookState = this.state.books;
+        const bookToUpdate = this.findBook(book.id);
+        bookToUpdate.shelf = shelf;
+        initialBookState.forEach((lookUpBook)=>{
+            if(lookUpBook.id === bookToUpdate.id){
+                lookUpBook = bookToUpdate;
+            }
+        });
+        this.setState({books:initialBookState});
+        this.props.updateBook(initialBookState, book, shelf);
     }
-    
+    componentWillReceiveProps(newProps){
+        console.log("triggered will receive props");
+        console.log(this.props);
+        this.setState({books:newProps.initialBooks});
+    }
     componentDidMount(){
-    BooksAPI.getAll().then((books)=>{
-      this.setState({
-        books:books
-      });
-    });
-  }
+        console.log("Mounting will be done");
+        console.log(typeof this.props.initialBooks);
+        if(Array.isArray(this.props.initialBooks) &&  this.props.initialBooks.length>1){
+            console.log("MOunting now");
+            this.setState({books:this.props.initialBooks});
+        }else{
+            console.log("trigger api call now");
+            BooksAPI.getAll().then((books)=>{
+            this.setState({
+            books:books
+            });
+        });
+        this.props.updatingBooks(this.state.books);
+        }
+    }
     render(){
-        const booksList = this.state.books.length;
-        console.log("triggered booksList");
+        const bookLength = this.state.books.length;
+        console.log("triggered booksList"+this.state.books);
         return(
           <div className="list-books">
             <div className="list-books-title">
               <h1>MyReads</h1>
             </div>
             <div className="list-books-content">
-                 {booksList >1 ? (
+                 {bookLength >1 ? (
               <div>
-                    <CurrentlyReading books={this.categorizeBooks('currentlyReading')}/>
+                    <CurrentlyReading books={this.categorizeBooks('currentlyReading')} updateBook={this.updateBookStatus} />
                     <WantToRead books={this.categorizeBooks('wantToRead')} updateBook={this.updateBookStatus} />
-                    <Read books={this.categorizeBooks('read')} />
+                    <Read books={this.categorizeBooks('read')} updateBook={this.updateBookStatus} />
               </div>
               ): null}
             </div>
