@@ -3,15 +3,11 @@ class Read extends Component{
     constructor(props){
     super(props);
     this.handleChange = this.handleChange.bind(this);
-  }
-  
+  } 
     handleChange(book,event){
-      console.log(event.target.value);
-      console.log(book[0].book);
       this.props.updateBook(book[0].book,event.target.value);
     }
     render(){
-        console.log("Read is triggered");
         return (
             <div className="bookshelf">
                         <h2 className="bookshelf-title">Read</h2>

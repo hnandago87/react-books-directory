@@ -7,13 +7,10 @@ class CurrentlyReading extends Component{
     }
   
     handleChange(book,event){
-        console.log(event.target.value);
-        console.log(book[0].book);
         this.props.updateBook(book[0].book,event.target.value);
 
       }
     render(){
-      console.log("Current is reading");
         return(
             <div className="bookshelf">
                   <h2 className="bookshelf-title">Currently Reading</h2>

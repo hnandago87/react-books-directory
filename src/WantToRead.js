@@ -5,15 +5,11 @@ class WantToRead extends Component{
     super(props);
     this.handleChange = this.handleChange.bind(this);
   }
-  
     handleChange(book,event){
-      console.log(event.target.value);
-      console.log(book[0].book);
       this.props.updateBook(book[0].book,event.target.value);
     }
     
     render(){
-       console.log("WTR is triggered");
         return(
             <div className="bookshelf">
                   <h2 className="bookshelf-title">Want to Read</h2>

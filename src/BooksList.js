@@ -42,19 +42,10 @@ class BookList extends Component{
         this.setState({books:initialBookState});
         this.props.updateBook(initialBookState, book, shelf);
     }
-    componentWillReceiveProps(newProps){
-        console.log("triggered will receive props");
-        console.log(this.props);
-        this.setState({books:newProps.initialBooks});
-    }
     componentDidMount(){
-        console.log("Mounting will be done");
-        console.log(typeof this.props.initialBooks);
         if(Array.isArray(this.props.initialBooks) &&  this.props.initialBooks.length>1){
-            console.log("MOunting now");
             this.setState({books:this.props.initialBooks});
         }else{
-            console.log("trigger api call now");
             BooksAPI.getAll().then((books)=>{
             this.setState({
             books:books
@@ -65,7 +56,6 @@ class BookList extends Component{
     }
     render(){
         const bookLength = this.state.books.length;
-        console.log("triggered booksList"+this.state.books);
         return(
           <div className="list-books">
             <div className="list-books-title">

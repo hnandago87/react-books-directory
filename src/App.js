@@ -25,7 +25,7 @@ class BooksApp extends React.Component {
     this.getSearchQuery = this.getSearchQuery.bind(this);
     this.updateBookShelf = this.updateBookShelf.bind(this);
     this.getAllBooks = this.getAllBooks.bind(this);
-    this.getBookList = this.getBookList.bind(this);
+   // this.getBookList = this.getBookList.bind(this);
     this.updatingBooks = this.updatingBooks.bind(this);
   }
   getSearchQuery(query){
@@ -54,20 +54,10 @@ class BooksApp extends React.Component {
        });
      });
   }
-  getBookList(){
-    if(this.state.InitialBooks === []){
-      this.getAllBooks();
-      console.log("fetching new set of books")
-    } else { return this.state.InitialBooks;}
-    return this.state.InitialBooks;
-  }
-  componentDidMount(){
-    console.log("Parent Will mount");
-     this.getAllBooks();
-  }
   updatingBooks(books){
-    this.setState({InitialBooks:books});
-    console.log(books);
+    if(Array.isArray(books)){
+      this.setState({InitialBooks:books});
+    }
   }
   render() {
     return (
