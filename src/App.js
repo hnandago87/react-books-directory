@@ -14,9 +14,6 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      * showSearchPage: true
-     * 
-     * <Route path='/:id' render={(params)=>(<BookList data={params} books={this.state.books} />)}
-         />
      */
     searchQuery:'',
     books:[],
@@ -24,7 +21,7 @@ class BooksApp extends React.Component {
   }
     this.getSearchQuery = this.getSearchQuery.bind(this);
     this.updateBookShelf = this.updateBookShelf.bind(this);
-    this.getAllBooks = this.getAllBooks.bind(this);
+    //this.getAllBooks = this.getAllBooks.bind(this);
    // this.getBookList = this.getBookList.bind(this);
     this.updatingBooks = this.updatingBooks.bind(this);
   }
@@ -36,7 +33,6 @@ class BooksApp extends React.Component {
     });
   }
   updateBookShelf(books,book,shelf){
-    //removed typeof
     if(books !== null){
           this.setState({InitialBooks:books});
           BooksAPI.update(book,shelf).then((result)=>{console.log(result)});
@@ -46,13 +42,6 @@ class BooksApp extends React.Component {
       this.setState({InitialBooks: booksUpdate});
       BooksAPI.update(book,shelf).then((result)=>{console.log(result)});
     }
-  }
-  getAllBooks(){
-   BooksAPI.getAll().then((books)=>{
-       this.setState({
-         InitialBooks:books
-       });
-     });
   }
   updatingBooks(books){
     if(Array.isArray(books)){

@@ -8,7 +8,6 @@ class CurrentlyReading extends Component{
   
     handleChange(book,event){
         this.props.updateBook(book[0].book,event.target.value);
-
       }
     render(){
         return(
