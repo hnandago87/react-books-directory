@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 import './App.css'
 import BookList from './BooksList';
 import BookSearch from './BookSearch';
- import * as BooksAPI from './BooksAPI';
+import * as BooksAPI from './BooksAPI';
 class BooksApp extends React.Component {
   constructor(props){
     super(props);
@@ -16,21 +16,31 @@ class BooksApp extends React.Component {
      * showSearchPage: true
      */
     searchQuery:'',
-    books:[],
-    InitialBooks:[]
+    InitialBooks:[],
+    searchedBooks:[]
   }
     this.getSearchQuery = this.getSearchQuery.bind(this);
     this.updateBookShelf = this.updateBookShelf.bind(this);
-    //this.getAllBooks = this.getAllBooks.bind(this);
-   // this.getBookList = this.getBookList.bind(this);
-    this.updatingBooks = this.updatingBooks.bind(this);
+    this.getAllBooks = this.getAllBooks.bind(this);
+  }
+  getAllBooks(){
+     BooksAPI.getAll().then((books)=>{
+            this.setState({
+            InitialBooks:books
+             });
+         });
   }
   getSearchQuery(query){
-    BooksAPI.search(query, 10).then((books)=>{
-      this.setState({
-        books:books
+    if(query.length>=1){
+      BooksAPI.search(query, 10).then((books)=>{
+        books.forEach((book)=>{
+          this.state.InitialBooks.forEach((InitialBook)=>{
+            InitialBook.id===book.id? book["shelf"] = InitialBook.shelf:null;
+          });
+        });
+        this.setState({searchedBooks:books});
       });
-    });
+    }
   }
   updateBookShelf(books,book,shelf){
     if(books !== null){
@@ -38,23 +48,26 @@ class BooksApp extends React.Component {
           BooksAPI.update(book,shelf).then((result)=>{console.log(result)});
     }else{
       let booksUpdate = this.state.InitialBooks;
+      booksUpdate.forEach((OriginalBook)=>{
+        if(OriginalBook.id === book.id){
+          OriginalBook["shelf"] = shelf;
+        }
+      });
       booksUpdate = booksUpdate.push(book);
-      this.setState({InitialBooks: booksUpdate});
       BooksAPI.update(book,shelf).then((result)=>{console.log(result)});
+      this.setState({InitialBooks: booksUpdate});
     }
   }
-  updatingBooks(books){
-    if(Array.isArray(books)){
-      this.setState({InitialBooks:books});
-    }
+  componentWillMount(){
+    this.getAllBooks();
   }
   render() {
     return (
       <div>
-        <Route exact path='/' render={(params)=>(<BookList updateBook={this.updateBookShelf} updatingBooks={this.updatingBooks} initialBooks={this.state.InitialBooks}/>)}
+        <Route exact path='/' render={(params)=>(<BookList updateBook={this.updateBookShelf} showBooks={this.getAllBooks} initialBooks={this.state.InitialBooks}/>)}
          />
          <Route exact path='/search' render={()=>(
-          <BookSearch updateBook={this.updateBookShelf} searchedBooks={this.state.books} getSearchQuery={this.getSearchQuery }/>
+          <BookSearch sendBooksForQuery={this.state.searchedBooks} updateBook={this.updateBookShelf} getSearchQuery={this.getSearchQuery}/>
         )}
          /> 
       </div>

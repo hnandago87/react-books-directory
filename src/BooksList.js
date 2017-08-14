@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import CurrentlyReading from './CurrentlyReading';
-import WantToRead from './WantToRead';
-import Read from './Read';
-import * as BooksAPI from './BooksAPI'
+import BookShelf from './BookShelf';
+//import * as BooksAPI from './BooksAPI'
 
 class BookList extends Component{
     constructor(props){
@@ -37,21 +35,26 @@ class BookList extends Component{
         initialBookState.forEach((lookUpBook)=>{
             if(lookUpBook.id === bookToUpdate.id){
                 lookUpBook = bookToUpdate;
+                console.log(lookUpBook);
             }
         });
         this.setState({books:initialBookState});
         this.props.updateBook(initialBookState, book, shelf);
     }
+    componentWillReceiveProps(newProps){
+        this.setState({books:newProps.initialBooks});
+    }
     componentDidMount(){
-        if(Array.isArray(this.props.initialBooks) &&  this.props.initialBooks.length>1){
-            this.setState({books:this.props.initialBooks});
-        }else{
-            BooksAPI.getAll().then((books)=>{
-            this.setState({
-            books:books
-            });
-        });
-        this.props.updatingBooks(this.state.books);
+        this.props.showBooks();
+        this.state.books.length<1?console.log("empty"):console.log(this.state.books);
+    }
+    shouldComponentUpdate(newProps, newState){
+        console.log(newProps);
+        console.log(newState);
+        if(newState.books.length>0){
+            return true
+        } else {
+            return false;
         }
     }
     render(){
@@ -64,9 +67,9 @@ class BookList extends Component{
             <div className="list-books-content">
                  {bookLength >1 ? (
               <div>
-                    <CurrentlyReading books={this.categorizeBooks('currentlyReading')} updateBook={this.updateBookStatus} />
-                    <WantToRead books={this.categorizeBooks('wantToRead')} updateBook={this.updateBookStatus} />
-                    <Read books={this.categorizeBooks('read')} updateBook={this.updateBookStatus} />
+                    <BookShelf shelfTitle='Currently Reading' books={this.categorizeBooks('currentlyReading')} updateBook={this.updateBookStatus} />
+                    <BookShelf shelfTitle='Want to Read' books={this.categorizeBooks('wantToRead')} updateBook={this.updateBookStatus} />
+                    <BookShelf shelfTitle='Read' books={this.categorizeBooks('read')} updateBook={this.updateBookStatus} />
               </div>
               ): null}
             </div>

@@ -1,16 +1,20 @@
-import React, { Component } from 'react';
- import { Link } from 'react-router-dom';
- class BookSearch extends Component{
+ 
+     /*
+     *TODO:
+     *1) update the state
+     *2) check the reflected changes
+     */
      constructor(props){
-        super(props);
-        this.state={
-            searchedBooks:[]
-        }
-        this.getBookSearch = this.getBookSearch.bind(this);
-        this.handleChange = this.handleChange.bind(this);
+         super(props);
+         this.state={
+             bookSearch:'',
+             SearchedBooks:[]
+         }
+         this.handleChange = this.handleChange.bind(this);
+         this.getBookSearch = this.getBookSearch.bind(this);
      }
-     handleChange(book, event){
-          const initialBookState = this.state.searchedBooks;
+      handleChange(book,event){
+          const initialBookState = this.state.SearchedBooks;
           const bookToChange = book[0].book;
           const shelfType = event.target.value;
           bookToChange["shelf"] = shelfType
@@ -22,19 +26,21 @@ import React, { Component } from 'react';
             }
         });
         this.setState({SearchedBooks:initialBookState});
-        this.props.updateBook(null,bookToChange, shelfType);
-     }
+          this.props.updateBook(null,bookToChange, shelfType);
+      }
      getBookSearch(e){
          if(e.target.value.length>0){
+             this.setState({bookSearch : e.target.value});
              this.props.getSearchQuery(e.target.value);
          }
      }
      componentWillReceiveProps(newProps){
-         this.setState({searchedBooks:newProps.sendBooksForQuery});
+        this.setState({SearchedBooks:newProps.searchedBooks});
+        console.log(this.state.SearchedBooks);
      }
      render(){
-         return(
-             <div className="search-books">
+        return (
+          <div className="search-books">
             <div className="search-books-bar">
               <Link className="close-search" to="/">Close</Link>
               <div className="search-books-input-wrapper">
@@ -52,7 +58,7 @@ import React, { Component } from 'react';
             </div>
             <div className="search-books-results">
               <ol className="books-grid">
-                   {this.state.searchedBooks.length >= 1 ? this.state.searchedBooks.map((book)=>(
+                   {this.state.SearchedBooks.length >= 1 ? this.state.SearchedBooks.map((book)=>(
                       <li key={book.id}>
                         <div className="book">
                           <div className="book-top">
@@ -75,7 +81,5 @@ import React, { Component } from 'react';
               </ol>
             </div>
           </div>
-         )
+        )
      }
- }
- export default BookSearch
